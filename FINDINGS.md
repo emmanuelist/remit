@@ -113,3 +113,46 @@ covers exactly that impersonation case.
 
 Verified on `0x14db36c9…7f49d`: relayer entrypoint, `ExecutionSuccess` for
 `0x4d324cd7…1ccb`, verdict `IDENTICAL`.
+
+
+---
+
+## 3. `ai_generate_workflow` never warmed up: three cold starts, then a 524
+
+**Status:** observed 2026-09-02, roughly 06:00 CEST. May be load-dependent — recorded with
+timestamps so it can be confirmed or dismissed rather than argued about.
+
+The MCP transport itself is healthy. `initialize` returns in well under a second, the
+session token carries the right scope, and `tools/list` reports 44 tools.
+
+`ai_generate_workflow` does not answer. Over four attempts spanning about two and a half
+minutes, each honouring the documented 30-second hint:
+
+```
+attempt 1   {"code":"upstream_cold_start","retryAfterSeconds":30}
+attempt 2   {"code":"upstream_cold_start","retryAfterSeconds":30}
+attempt 3   {"code":"upstream_cold_start","retryAfterSeconds":30}
+attempt 4   HTTP 524                       (upstream timed out)
+```
+
+Prompt used was ordinary and read-only: *"When Safe 0xA4A1…AD11 on Ethereum Sepolia emits
+ExecutionSuccess, send a Discord notification naming the safeTxHash."*
+
+### Why it matters
+
+`upstream_cold_start` tells a caller to retry after 30 seconds, which implies the next
+attempt is likely to succeed. Here it never did, and the terminal state was a 524 rather
+than a structured error — so an agent following the documented retry protocol has no
+signal that it should stop. It waits, retries, and eventually gets an HTML gateway error
+where it expected JSON.
+
+For a first-time builder this is the worst-shaped failure: the tool is advertised, the
+error is advisory rather than final, and the retry advice does not converge. Two things
+would fix it without touching the model path — cap the advisory retries and return a
+structured `upstream_unavailable` once exhausted, and say in the docs that the generator
+may be cold outside working hours.
+
+### Consequence for Remit
+
+The composer cannot run on KeeperHub's model today, so it stays deterministic and the LLM
+arrives through a route that does not depend on this tool.
