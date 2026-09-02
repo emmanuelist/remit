@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Remit">
+  <title>Remit</title>
+  <rect width="32" height="32" fill="#faf8f3"/>
+  <g fill="#b0432a">
+    <rect x="6" y="9" width="20" height="3"/>
+    <rect x="6" y="14.5" width="20" height="3"/>
+    <rect x="6" y="20" width="20" height="3"/>
+  </g>
+</svg>

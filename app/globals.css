@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Remit design tokens — AUTHORITATIVE.
+   Direction: "instrument". A document you sign, not a dashboard you watch.
+   Hairline rules, near-square corners, no shadows, no gradients.
+   The accent (--seal) appears on the identity verdict and nowhere else.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --paper: #faf8f3;
+  --paper-sunk: #f1eee6;
+  --ink: #1b1a16;
+  --ink-quiet: #6e6a5f;
+  --rule: #ddd8cc;
+  --seal: #b0432a;
+  --assent: #2f6448;
+  --alarm: #a01722;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121210;
+    --paper-sunk: #1a1a17;
+    --ink: #ebe8df;
+    --ink-quiet: #8c887c;
+    --rule: #2c2b26;
+    --seal: #d4694a;
+    --assent: #63a683;
+    --alarm: #e2565b;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-ink: var(--ink);
+  --color-ink-quiet: var(--ink-quiet);
+  --color-rule: var(--rule);
+  --color-seal: var(--seal);
+  --color-assent: var(--assent);
+  --color-alarm: var(--alarm);
+
+  --font-prose: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-ui: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hashes, addresses and calldata carry most of the meaning here, so they get
+   tabular figures and never wrap mid-value in a way that hides a difference. */
+.data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 1;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
