@@ -1,3 +1,4 @@
+import { RemitRow } from "@/components/remit-row";
 import { Treasury } from "@/components/treasury";
 import { Kicker, Notice } from "@/components/type";
 import { watchedSafe } from "@/lib/config";
@@ -80,17 +81,7 @@ export default async function Page() {
           ) : (
             <ul className="border-rule border-t">
               {queue.ok.map((tx) => (
-                <li className="border-rule border-b py-4" key={tx.safeTxHash}>
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                    <span className="data text-sm">{tx.safeTxHash}</span>
-                    <span className="font-mono text-[11px] text-ink-quiet">
-                      {tx.confirmations.length} of {tx.confirmationsRequired}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-ink-quiet text-xs">
-                    {tx.dataDecoded?.method ?? "raw call"} · nonce {tx.nonce}
-                  </p>
-                </li>
+                <RemitRow key={tx.safeTxHash} tx={tx} />
               ))}
             </ul>
           )}
@@ -104,7 +95,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <header className="mb-10" data-shot="masthead">
-        <Kicker>Phase 1 · read path</Kicker>
+        <Kicker>Phase 2 · propose path</Kicker>
         <h1 className="mt-3 font-prose text-5xl leading-none tracking-tight">Remit</h1>
         <p className="mt-4 max-w-xl font-prose text-ink-quiet text-lg leading-snug">
           An agent gets exactly the authority its owners signed — byte for byte.

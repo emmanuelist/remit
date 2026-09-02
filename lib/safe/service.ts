@@ -57,6 +57,8 @@ export type MultisigTransaction = {
   readonly confirmationsRequired: number;
   readonly confirmations: readonly Confirmation[];
   readonly dataDecoded: { readonly method: string } | null;
+  /** Free text set by whoever proposed. Remit encodes the intent here. Untrusted. */
+  readonly origin: string | null;
 };
 
 async function get<T>(chainId: number, path: string): Promise<T> {

@@ -3,7 +3,30 @@
 Every value crossing a seam. Written before the routes, so the UI is never designed against
 imagined data. Field-level source of truth is listed in `CLAUDE.md` rule 1.
 
-## Remit — our record, Postgres
+## Where the intent lives
+
+Remit does **not** keep its own copy of the intent. It is written into the Safe Transaction
+Service's `origin` field on the proposal itself, so it sits in the record the owners are
+signing, travels to Safe{Wallet}, and survives Remit being down. A separate store would let
+our copy drift from the proposal it describes.
+
+The envelope is minimal for one reason: `origin` is capped at **200 characters**. That is
+measured, not read — a 212-character envelope is rejected with `422 Unprocessable Content`,
+a 188-character one is accepted, and the api-kit types say only `origin?: string`.
+
+```json
+{"name":"Remit","intent":"pay the contractor 12.50 USDC","composer":"deterministic/erc20-transfer@1"}
+```
+
+An intent that does not fit is **refused, not trimmed** (`IntentTooLong`). A product whose
+claim is fidelity does not quietly shorten what a person said. `intentBudget()` reports how
+many characters remain for a given composer name.
+
+The ceiling is the reason a store of our own comes back later: dry-run results and longer
+intents do not fit in 200 characters. Until they are needed, an external database earns
+nothing.
+
+## Remit — our record, Postgres [deferred]
 
 Written before the proposal is sent. Never reconstructed after the fact.
 

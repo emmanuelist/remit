@@ -31,14 +31,17 @@ Build window: **Sep 6 10:00 UTC → Sep 18 10:00 UTC**. Phase 0 must be finished
   and show a login page to anyone who is not the owner. Only the public one goes in the
   README, the submission form, or the demo.
 
-- [ ] **Phase 1 — read path**
+- [x] **Phase 1 — read path** — done 2026-09-02
   KeeperHub MCP connected. Read a real Safe's owners, threshold, nonce and pending queue
   through KeeperHub, not through our own RPC. Render them.
   Gate: every number on screen provably came from KeeperHub.
 
-- [ ] **Phase 2 — propose path**
-  Agent composes a treasury action and it lands in the Safe Transaction Service, visible in
-  the real Safe{Wallet} UI. Intent and calldata persisted to Postgres *before* proposing.
+- [~] **Phase 2 — propose path** — mechanism done, composer still deterministic
+  A real proposal is in the Safe's queue: `0x4d324cd7…1ccb`, `transfer()`, nonce 0,
+  1 of 2 confirmations, 68 bytes of calldata, intent carried in `origin`.
+  Composed by `deterministic/erc20-transfer@1`. The LLM composer slots in behind the same
+  interface — deliberately second, so the byte-identity path is proven before a
+  probabilistic composer touches it. **Needs `ANTHROPIC_API_KEY`.**
   Gate: a proposal made here is visible in Safe{Wallet} and in `get-pending-transactions`.
 
 - [ ] **Phase 3 — the Remit card**
