@@ -5,12 +5,12 @@ import type { MultisigTransaction } from "@/lib/safe/service";
 /** Signature progress as an object rather than a sentence: one mark per required signer. */
 function Progress({ have, need }: { have: number; need: number }) {
   return (
-    <span
-      aria-label={`${have} of ${need} signatures`}
-      className="flex shrink-0 items-center gap-1.5"
-    >
+    <span className="flex shrink-0 items-center gap-1.5">
+      {/* Decoration. The count beside it is the accessible text, so labelling these
+          too would make a screen reader say the same thing twice. */}
       {Array.from({ length: need }, (_, i) => (
         <span
+          aria-hidden
           className={`h-2.5 w-2.5 rounded-full ${
             i < have ? "bg-assent" : "border border-rule"
           }`}
@@ -18,7 +18,7 @@ function Progress({ have, need }: { have: number; need: number }) {
         />
       ))}
       <span className="ml-1 font-mono text-[11px] text-ink-quiet">
-        {have} of {need}
+        {have} of {need} signed
       </span>
     </span>
   );
