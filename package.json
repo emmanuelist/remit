@@ -2,7 +2,7 @@
   "name": "remit",
   "version": "0.1.0",
   "private": true,
-  "description": "An agent gets exactly the authority its owners signed — byte for byte.",
+  "description": "An agent gets exactly the authority its owners signed \u2014 byte for byte.",
   "engines": {
     "node": ">=22"
   },
@@ -41,5 +41,8 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vitest": "4.1.11"
+  },
+  "overrides": {
+    "esbuild": "0.28.2"
   }
 }
