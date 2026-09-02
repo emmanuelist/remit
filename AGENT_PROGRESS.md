@@ -16,10 +16,15 @@ Build window: **Sep 6 10:00 UTC → Sep 18 10:00 UTC**. Phase 0 must be finished
   - A Safe deployed on Sepolia with known owner keys and threshold 2-of-3
   Gate: the deployed URL renders an empty state against real, empty data.
 
-  Done: repo, pins, tokens, Biome, green gate, Safe API key, both `kh_` keys,
+  Done: repo public at https://github.com/emmanuelist/remit, pins verified against the
+  registry, design tokens, CI green on GitHub Actions running all four gates,
+  Safe API key, both `kh_` keys held locally,
   Safe `0xA4A12cCA345853A041C423fcA45Eb991B0FbAD11` (Sepolia, 2-of-3, v1.4.1, 20 USDC),
   deployed to https://remit-pied.vercel.app.
-  Remaining: DoraHacks registration; Vercel secrets (deployed with public vars only).
+  Remaining: DoraHacks registration; `SAFE_API_KEY` and `KEEPERHUB_API_KEY_READ` on Vercel.
+  `KEEPERHUB_API_KEY_WRITE` is deliberately held back until phase 4 — the deployed site has
+  no auth, and a write-capable credential on it before the execute path exists and is gated
+  buys nothing but risk.
 
   **Three URLs exist and only one is public.** `remit-pied.vercel.app` serves anonymously;
   the deployment URL and `remit-emmanuel-pauls-projects.vercel.app` sit behind Vercel SSO
