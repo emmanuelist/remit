@@ -66,3 +66,50 @@ already exists and only needs to move ahead of the gate.
 
 Remit passes `simulate: true` on all contract reads. Recorded in `AGENTS.md` so the reason
 is visible at the call site rather than looking like a mistake.
+
+
+---
+
+## 2. KeeperHub broadcasts through a relayer, so the executed calldata is not `execTransaction`
+
+**Status:** behaviour, not a bug. Recorded because it invalidates the obvious design.
+
+A remit executed through `POST /api/execute/contract-call` does not arrive at the Safe as a
+direct call. The transaction that lands is:
+
+```
+EOA 0x809d…0444  →  relayer 0x5af5…f07d  (selector 0x9aefaff8, 900 bytes)
+                 →  Safe 0xA4A1…AD11     execTransaction
+                 →  USDC 0x1c7D…7238     transfer
+```
+
+The KeeperHub wallet the dry run reports as `from` (`0xc5a9…6c91`) appears as an *argument*
+to the relayer, not as the transaction sender.
+
+### Why it matters
+
+The obvious way to prove a signed call is the executed call is to decode the executed
+transaction's input and compare it field by field. That returns `UNDECODABLE` here: the
+top-level input is the relayer's calldata and `execTransaction` is nowhere near the top.
+Any integration that verifies by decoding top-level calldata will silently fail against
+KeeperHub, and a naive implementation might report a mismatch that does not exist.
+
+### What Remit does instead
+
+Reads the Safe's own attestation. On success the Safe emits
+
+```
+ExecutionSuccess(bytes32 indexed txHash, uint256 payment)
+```
+
+where `txHash` is the EIP-712 `safeTxHash` — a commitment to `to`, `value`, `data`,
+`operation`, the gas fields and the nonce. If the Safe emits that event for the hash the
+owners signed, the executed call was byte-identical to the approved one by construction.
+
+This is the better proof anyway. It does not depend on Remit decoding anything correctly,
+and it holds however many relayers sit in front. Only logs emitted by the Safe itself are
+considered — any contract can emit an event with the same signature, and `tests/identity.test.ts`
+covers exactly that impersonation case.
+
+Verified on `0x14db36c9…7f49d`: relayer entrypoint, `ExecutionSuccess` for
+`0x4d324cd7…1ccb`, verdict `IDENTICAL`.

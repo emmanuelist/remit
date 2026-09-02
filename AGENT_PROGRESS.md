@@ -51,7 +51,15 @@ Build window: **Sep 6 10:00 UTC → Sep 18 10:00 UTC**. Phase 0 must be finished
   Gate: every state renders from real data or its honest empty state; `data-shot` present
   on each element the film points at.
 
-- [ ] **Phase 4 — execute path**
+- [x] **Phase 4 — execute path** — done 2026-09-02, end to end
+  Composed → proposed → 2 of 2 signed → dry run through the **read-scoped** key
+  (`wouldRevert: false`, gas 129,032) → broadcast with the write key.
+  **Executed:** `0x14db36c9a0ef06f10ea1d4fa451ce23485d49df91bcd8831e0e5a3ced517f49d`
+  https://sepolia.etherscan.io/tx/0x14db36c9a0ef06f10ea1d4fa451ce23485d49df91bcd8831e0e5a3ced517f49d
+  Verdict `IDENTICAL` — the Safe emitted `ExecutionSuccess` for the signed hash.
+  This is the transaction link the submission requires.
+
+- [ ] **Phase 4 — execute path (original)**
   Threshold met → KeeperHub executes the approved calldata via `execute_contract_call` →
   transaction hash → identity verified against the chain.
   Gate: **a real transaction executed through KeeperHub.** This is a submission requirement.
