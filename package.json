@@ -2,7 +2,7 @@
   "name": "remit",
   "version": "0.1.0",
   "private": true,
-  "description": "An agent gets exactly the authority its owners signed \u2014 byte for byte.",
+  "description": "An agent gets exactly the authority its owners signed — byte for byte.",
   "engines": {
     "node": ">=22"
   },
@@ -28,6 +28,7 @@
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
     "viem": "2.56.2",
     "zod": "4.5.4"
   },
