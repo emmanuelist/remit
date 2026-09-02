@@ -4,17 +4,24 @@ import type { MultisigTransaction } from "@/lib/safe/service";
 
 /** Signature progress as an object rather than a sentence: one mark per required signer. */
 function Progress({ have, need }: { have: number; need: number }) {
+  // Each slot is named for the signature it stands for, so the mark has an identity
+  // that is not its position in an array.
+  const slots = Array.from({ length: need }, (_, i) => ({
+    id: `signature-${i + 1}-of-${need}`,
+    filled: i < have,
+  }));
+
   return (
     <span className="flex shrink-0 items-center gap-1.5">
       {/* Decoration. The count beside it is the accessible text, so labelling these
           too would make a screen reader say the same thing twice. */}
-      {Array.from({ length: need }, (_, i) => (
+      {slots.map((slot) => (
         <span
           aria-hidden
           className={`h-2.5 w-2.5 rounded-full ${
-            i < have ? "bg-assent" : "border border-rule"
+            slot.filled ? "bg-assent" : "border border-rule"
           }`}
-          key={`mark-${need}-${i}`}
+          key={slot.id}
         />
       ))}
       <span className="ml-1 font-mono text-[11px] text-ink-quiet">
