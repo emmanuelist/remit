@@ -4,7 +4,7 @@ import { Kicker, Notice } from "@/components/type";
 import { watchedSafe } from "@/lib/config";
 import { getChain } from "@/lib/keeperhub/client";
 import { readSafeState, readTokenBalance } from "@/lib/safe/read";
-import { pendingTransactions } from "@/lib/safe/service";
+import { allTransactions } from "@/lib/safe/service";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +38,7 @@ export default async function Page() {
     usdc
       ? attempt(() => readTokenBalance(usdc, watched.address as string, watched.chainId))
       : Promise.resolve({ ok: null } as const),
-    attempt(() => pendingTransactions(watched.address as string, watched.chainId)),
+    attempt(() => allTransactions(watched.address as string, watched.chainId)),
   ]);
 
   return (
@@ -74,14 +74,18 @@ export default async function Page() {
               <p className="font-prose text-lg">No remits yet.</p>
               <p className="mt-1.5 max-w-md text-ink-quiet text-sm leading-relaxed">
                 Nothing has been proposed to this Safe. A remit appears here the moment an
-                agent composes one, and stays until its signed bytes and executed bytes
-                have been compared.
+                agent composes one, and stays after it executes — the register is a
+                record, not a queue.
               </p>
             </div>
           ) : (
             <ul className="border-rule border-t">
               {queue.ok.map((tx) => (
-                <RemitRow key={tx.safeTxHash} tx={tx} />
+                <RemitRow
+                  explorer={"ok" in chain && chain.ok ? chain.ok.explorerUrl : null}
+                  key={tx.safeTxHash}
+                  tx={tx}
+                />
               ))}
             </ul>
           )}
@@ -95,7 +99,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <header className="mb-10" data-shot="masthead">
-        <Kicker>Phase 2 · propose path</Kicker>
+        <Kicker>Phase 4 · executed</Kicker>
         <h1 className="mt-3 font-prose text-5xl leading-none tracking-tight">Remit</h1>
         <p className="mt-4 max-w-xl font-prose text-ink-quiet text-lg leading-snug">
           An agent gets exactly the authority its owners signed — byte for byte.
