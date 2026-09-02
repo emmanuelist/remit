@@ -1,0 +1,65 @@
+# Phases
+
+One phase at a time. Stop at each gate and confirm. A gate is closed only when
+`npm run lint && npm run typecheck && npm run build && npm run test` are all green.
+
+Build window: **Sep 6 10:00 UTC → Sep 18 10:00 UTC**. Phase 0 must be finished before it opens.
+
+---
+
+- [ ] **Phase 0 — rig** *(before Sep 6, does not consume build days)*
+  Repo, pins, tokens, Biome, CI, deploy pipeline live on a real URL.
+  External accounts, all of which have unknown latency and must be started now:
+  - Safe API key — developer.safe.global → API Keys
+  - KeeperHub org + `kh_` API key — app.keeperhub.com → Settings → Developer
+  - DoraHacks registration for `agent-economy`
+  - A Safe deployed on Sepolia with known owner keys and threshold 2-of-3
+  Gate: the deployed URL renders an empty state against real, empty data.
+
+  Done: repo, pins, tokens, Biome, green gate, Safe API key, both `kh_` keys,
+  Safe `0xA4A12cCA345853A041C423fcA45Eb991B0FbAD11` (Sepolia, 2-of-3, v1.4.1, 20 USDC),
+  deployed to https://remit-pied.vercel.app.
+  Remaining: DoraHacks registration; Vercel secrets (deployed with public vars only).
+
+  **Three URLs exist and only one is public.** `remit-pied.vercel.app` serves anonymously;
+  the deployment URL and `remit-emmanuel-pauls-projects.vercel.app` sit behind Vercel SSO
+  and show a login page to anyone who is not the owner. Only the public one goes in the
+  README, the submission form, or the demo.
+
+- [ ] **Phase 1 — read path**
+  KeeperHub MCP connected. Read a real Safe's owners, threshold, nonce and pending queue
+  through KeeperHub, not through our own RPC. Render them.
+  Gate: every number on screen provably came from KeeperHub.
+
+- [ ] **Phase 2 — propose path**
+  Agent composes a treasury action and it lands in the Safe Transaction Service, visible in
+  the real Safe{Wallet} UI. Intent and calldata persisted to Postgres *before* proposing.
+  Gate: a proposal made here is visible in Safe{Wallet} and in `get-pending-transactions`.
+
+- [ ] **Phase 3 — the Remit card**
+  The signature component. Intent, calldata, dry run, `safeTxHash`, signatures collected,
+  and the identity row. Empty, pending, refused, executed and mismatched states all built.
+  Gate: all five states render from real data; `data-shot` attributes present.
+
+- [ ] **Phase 4 — execute path**
+  Threshold met → KeeperHub executes the approved calldata via `execute_contract_call` →
+  transaction hash → identity verified against the chain.
+  Gate: **a real transaction executed through KeeperHub.** This is a submission requirement.
+  Capture the link the moment it exists; do not leave it to deadline day.
+
+- [ ] **Phase 5 — the non-happy path**
+  Policy refusal, expiry, revert, stuck nonce, retry and gas escalation, audit trail
+  surfaced. Rubric line 3 is explicitly about this, and almost no entrant will film it.
+  Gate: a refused proposal and a failed execution both render honestly.
+
+- [ ] **Phase 6 — bounty PR** *(separate BUIDL)*
+  `execTransaction`, `execTransactionFromModule`, `approveHash` as first-class write actions
+  in `protocols/safe.ts`, following `protocols/aave-v3.ts`, with tests.
+  The `ApproveHash` event trigger already exists with no write to produce it — close that
+  asymmetry. Fallback if it proves larger than estimated: issues `#1959` and `#1932`, both
+  already labelled `accepted, confirmed`.
+  Gate: PR open against `staging`, CI green, description references the issue it closes.
+
+- [ ] **Phase 7 — proof surface**
+  README as verification surface, demo video, both BUIDL submissions.
+  Gate: `/hackathon preflight` clean.
