@@ -43,8 +43,10 @@ Build window: **Sep 6 10:00 UTC → Sep 18 10:00 UTC**. Phase 0 must be finished
 
 - [ ] **Phase 3 — the Remit card**
   The signature component. Intent, calldata, dry run, `safeTxHash`, signatures collected,
-  and the identity row. Empty, pending, refused, executed and mismatched states all built.
-  Gate: all five states render from real data; `data-shot` attributes present.
+  and the identity row. All eight states from `DESIGN.md` built in this pass, not bolted on
+  later: composed, proposed, refused, expired, executing, executed, failed, mismatch.
+  Gate: every state renders from real data or its honest empty state; `data-shot` present
+  on each element the film points at.
 
 - [ ] **Phase 4 — execute path**
   Threshold met → KeeperHub executes the approved calldata via `execute_contract_call` →
